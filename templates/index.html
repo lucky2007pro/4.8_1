@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Foydalanuvchilar Boshqaruvi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --card-bg: rgba(255, 255, 255, 0.95);
+            --primary: #4e54c8;
+            --secondary: #ff416c;
+            --text-main: #2d3436;
+            --text-muted: #636e72;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--text-main);
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            margin-top: 10px;
+        }
+
+        /* User Grid */
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        /* User Card */
+        .user-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px 20px;
+        }
+
+        .user-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+
+        /* Avatar qismi */
+        .avatar-wrapper {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: var(--bg-gradient);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            color: white;
+            font-size: 2.5rem;
+            font-weight: 700;
+            box-shadow: 0 8px 15px rgba(118, 75, 162, 0.3);
+        }
+
+        /* Gender belgisi */
+        .gender-icon {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .user-name {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        .user-age {
+            background: #dfe6e9;
+            padding: 2px 12px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        /* Ma'lumotlar ro'yxati */
+        .user-info {
+            width: 100%;
+            border-top: 1px solid #f1f1f1;
+            padding-top: 20px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 15px;
+            font-size: 0.95rem;
+            color: var(--text-muted);
+        }
+
+        .info-item i {
+            color: var(--primary);
+            width: 20px;
+        }
+
+        .info-item a {
+            text-decoration: none;
+            color: inherit;
+            transition: color 0.2s;
+        }
+
+        .info-item a:hover {
+            color: var(--primary);
+        }
+
+        .btn-profile {
+            margin-top: auto;
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 12px;
+            background: var(--primary);
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-profile:hover {
+            background: var(--secondary);
+        }
+
+        /* Bo'sh holat */
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 50px;
+            background: white;
+            border-radius: 20px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Foydalanuvchilar Markazi</h1>
+        <p>Tizimdagi barcha faol profillar boshqaruvi</p>
+    </div>
+
+    <div class="user-grid">
+        {% for user in users %}
+        <div class="user-card">
+            <div class="avatar-wrapper">
+                {{ user.first_name|first|upper }}
+
+                <div class="gender-icon">
+                    {% if user.gender|lower == 'erkak' or user.gender|lower == 'male' %}
+                        <i class="fas fa-mars" style="color: #0984e3;"></i>
+                    {% elif user.gender|lower == 'ayol' or user.gender|lower == 'female' %}
+                        <i class="fas fa-venus" style="color: #e84393;"></i>
+                    {% else %}
+                        <i class="fas fa-user-shield" style="color: #6c5ce7;"></i>
+                    {% endif %}
+                </div>
+            </div>
+
+            <h2 class="user-name">{{ user.first_name }} {{ user.last_name }}</h2>
+            <span class="user-age">{{ user.age }} yosh</span>
+
+            <div class="user-info">
+                <div class="info-item">
+                    <i class="fas fa-envelope"></i>
+                    <a href="mailto:{{ user.email }}">{{ user.email }}</a>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-phone-alt"></i>
+                    <span>+{{ user.tel }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-venus-mars"></i>
+                    <span>Jinsi: {{ user.gender }}</span>
+                </div>
+            </div>
+
+            <button class="btn-profile">Profilni ko'rish</button>
+        </div>
+        {% empty %}
+        <div class="empty-state">
+            <i class="fas fa-users-slash fa-3x" style="margin-bottom: 20px;"></i>
+            <p>Hozircha hech qanday foydalanuvchi ro'yxatdan o'tmagan.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>

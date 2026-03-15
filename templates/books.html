@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kitoblar Kolleksiyasi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Asosiy o'zgaruvchilar va sozlamalar */
+        :root {
+            --primary-color: #4F46E5;
+            --secondary-color: #9333EA;
+            --bg-color: #F3F4F6;
+            --card-bg: #FFFFFF;
+            --text-dark: #1F2937;
+            --text-gray: #6B7280;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            padding: 2rem;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 3rem;
+            color: var(--text-dark);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Grid yordamida kartalarni joylashtirish (Responsive) */
+        .book-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Kitob kartasi dizayni */
+        .book-card {
+            background-color: var(--card-bg);
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Yuqori qismdagi gradient chiziq */
+        .book-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
+        }
+
+        /* Hover animatsiyasi */
+        .book-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .book-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .book-author {
+            font-size: 0.95rem;
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Teglar (Janr, Yil, Bet) dizayni */
+        .badges {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .badge {
+            background-color: #EEF2FF;
+            color: var(--primary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .book-desc {
+            font-size: 0.9rem;
+            color: var(--text-gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+            flex-grow: 1; /* Matn qisqa bo'lsa ham kartalar bir xil balandlikda turishi uchun */
+        }
+
+        /* Karta pastki qismi (ISBN) */
+        .book-footer {
+            border-top: 1px solid #E5E7EB;
+            padding-top: 1rem;
+            font-size: 0.8rem;
+            color: var(--text-gray);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Agar ro'yxat bo'sh bo'lsa chiqadigan yozuv */
+        .no-books {
+            text-align: center;
+            grid-column: 1 / -1;
+            font-size: 1.2rem;
+            color: var(--text-gray);
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📚 Kutubxona</h1>
+
+    <div class="book-container">
+        {% for book in books %}
+        <div class="book-card">
+            <h2 class="book-title">{{ book.title }}</h2>
+            <div class="book-author">✍️ {{ book.author }}</div>
+
+            <div class="badges">
+                {% if book.genre %}<span class="badge">🎭 {{ book.genre }}</span>{% endif %}
+                {% if book.year %}<span class="badge">📅 {{ book.year }} yil</span>{% endif %}
+                {% if book.pages %}<span class="badge">📄 {{ book.pages }} bet</span>{% endif %}
+            </div>
+
+            <div class="book-desc">
+                {{ book.description|default:"Ushbu kitob haqida ma'lumot kiritilmagan." }}
+            </div>
+
+            <div class="book-footer">
+                <span><strong>ISBN:</strong> {{ book.isbn|default:"Noma'lum" }}</span>
+            </div>
+        </div>
+        {% empty %}
+        <div class="no-books">
+            Hozircha bazada hech qanday kitob yo'q. 😔
+        </div>
+        {% endfor %}
+    </div>
+
+</body>
+</html>
